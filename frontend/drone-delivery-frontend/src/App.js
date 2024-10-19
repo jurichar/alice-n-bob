@@ -1,5 +1,5 @@
 import { AppBar, Box, Container, Toolbar, Typography } from '@mui/material';
-import Dashboard from './components/Dashboard';
+import DeliveryTable from './components/DeliveryTable';
 
 function App() {
   return (
@@ -16,7 +16,7 @@ function App() {
         <Typography variant="h4" gutterBottom style={{ marginTop: '20px'}}>
           Welcome to the Drone Delivery System
         </Typography>
-        <Dashboard />
+        <DeliveryTable />
       </Container>
     </div>
   );

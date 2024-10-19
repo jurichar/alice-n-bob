@@ -2,8 +2,9 @@
 
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
+import DeliveryRow from './DeliveryRow';
 
-const Dashboard = () => {
+const DeliveryTable = () => {
   const [deliveries, setDeliveries] = useState([]);
   const [loading, setLoading] = useState(true);
   
@@ -44,11 +45,17 @@ const Dashboard = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            <TableRow>
-              <TableCell colSpan={5} align="center">
-                No deliveries
-              </TableCell>
-            </TableRow>
+            {deliveries.length > 0 ? (
+              deliveries.map((delivery) => (
+                <DeliveryRow key={delivery.id} delivery={delivery} />
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={5} align="center">
+                  No deliveries
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </TableContainer>
@@ -57,4 +64,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default DeliveryTable;

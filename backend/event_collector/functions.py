@@ -63,8 +63,9 @@ def get_ongoing_deliveries(db: Session):
     return (
         db.query(Delivery)
         .filter(
-            Delivery.state != DeliveryState.PARCEL_DELIVERED
-            or Delivery.state != DeliveryState.CRASHED
+            Delivery.state.notin_(
+                [DeliveryState.CRASHED, DeliveryState.PARCEL_DELIVERED]
+            )
         )
         .all()
     )
