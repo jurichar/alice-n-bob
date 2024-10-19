@@ -71,6 +71,27 @@ def get_ongoing_deliveries(db: Session):
     )
 
 
+def get_all_counts(db: Session):
+    ongoing = (
+        db.query(Delivery)
+        .filter(Delivery.state != DeliveryState.PARCEL_DELIVERED)
+        .count()
+    )
+    total = db.query(Delivery).count()
+    crashed = db.query(Delivery).filter(Delivery.state == DeliveryState.CRASHED).count()
+    delivered = (
+        db.query(Delivery)
+        .filter(Delivery.state == DeliveryState.PARCEL_DELIVERED)
+        .count()
+    )
+    return {
+        "ongoing_deliveries": ongoing,
+        "total_deliveries": total,
+        "crashed_deliveries": crashed,
+        "delivered_deliveries": delivered,
+    }
+
+
 def get_delivery_counts(db: Session):
     return {
         "ongoing_deliveries": db.query(Delivery)

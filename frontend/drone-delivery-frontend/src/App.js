@@ -1,6 +1,7 @@
 import { AppBar, Box, Container, Toolbar, Typography } from '@mui/material';
 import DeliveryTable from './components/DeliveryTable';
 import Statistics from './components/Statistics';
+import StatisticsMore from './components/StatisticsMore';
 import TrackDelivery from './components/TrackDelivery';
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
         <TrackDelivery />
         <DeliveryTable />
         <Statistics />
+        <StatisticsMore />
       </Container>
     </div>
   );

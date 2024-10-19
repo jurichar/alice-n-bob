@@ -118,6 +118,14 @@ async def counts(db: Session = Depends(get_db)):
     return get_delivery_counts(db)
 
 
+@router.get("/counts_all")
+async def counts_all(db: Session = Depends(get_db)):
+    """
+    Returns the number of ongoing deliveries and the total number of deliveries since the beginning.
+    """
+    return get_delivery_counts(db)
+
+
 @router.get("/reset")
 async def reset(db: Session = Depends(get_db)):
     return reset_db(db)
