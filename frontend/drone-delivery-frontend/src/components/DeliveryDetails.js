@@ -13,7 +13,7 @@ const DeliveryDetails = ({ delivery, refreshEvents }) => {
 
       const data = await response.json();
       console.log("Delivery events fetched successfully", data);
-      setEvents(data); 
+      setEvents(data);
     } catch (error) {
       console.error("Error fetching delivery events", error);
     }
@@ -28,8 +28,14 @@ const DeliveryDetails = ({ delivery, refreshEvents }) => {
 
   return (
     <div>
+      <Typography variant="h6" gutterBottom>
+        Delivery Details
+      </Typography>
       <Typography>
-        <strong>Created At:</strong> {new Date(delivery.created_at).toLocaleString()}
+        <strong>ID:</strong> {delivery.id}
+      </Typography>
+      <Typography>
+        <strong>Created At:</strong> {(delivery.created_at)}
       </Typography>
       <Typography>
         <strong>Updated At:</strong> {new Date(delivery.updated_at).toLocaleString()}
@@ -41,7 +47,7 @@ const DeliveryDetails = ({ delivery, refreshEvents }) => {
       <Typography variant="h6" gutterBottom style={{ marginTop: '20px' }}>
         Event History:
       </Typography>
-      
+
       {events.length > 0 ? (
         <List>
           {events.map((event) => (

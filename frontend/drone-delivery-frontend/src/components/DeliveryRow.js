@@ -38,16 +38,16 @@ const DeliveryRow = ({ delivery, eventAdded }) => {
       <TableRow>
         <TableCell colSpan={5} >
           <Accordion expanded={open} onChange={handleToggleDetails} elevation={0}>
-          <AccordionSummary
+            <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel1a-content"
             >
-              <Typography sx={{textAlign: 'center', flex: 1, fontSize: isMobile ? "0.9rem" : "1rem" }}>{delivery.state}</Typography>
-              <Typography sx={{textAlign: 'center', flex: 1, fontSize: isMobile ? "0.9rem" : "1rem" }}>{displayedId}</Typography>
+              <Typography sx={{ textAlign: 'center', flex: 1, fontSize: isMobile ? "0.9rem" : "1rem" }}>{delivery.state}</Typography>
+              <Typography sx={{ textAlign: 'center', flex: 1, fontSize: isMobile ? "0.9rem" : "1rem" }}>{displayedId}</Typography>
             </AccordionSummary>
             <AccordionDetails>
+              <DeliveryDetails delivery={delivery} refreshEvents={deliveryDetailsRef} />
               <EventForm deliveryId={delivery.id} onEventAdded={handleEventAdded} />
-              <DeliveryDetails delivery={delivery} refreshEvents={deliveryDetailsRef}/>
             </AccordionDetails>
           </Accordion>
         </TableCell>

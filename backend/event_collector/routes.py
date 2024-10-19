@@ -94,6 +94,22 @@ def events(delivery_id: str, db: Session = Depends(get_db)):
     ]
 
 
+@router.get("/deliveries/{delivery_id}", response_model=DeliveryResponse)
+def delivery(delivery_id: str, db: Session = Depends(get_db)):
+    """
+    Returns the state of a given delivery mission.
+    """
+    delivery = get_delivery_by_id(db=db, delivery_id=delivery_id)
+    if not delivery:
+        raise HTTPException(status_code=404, detail="Delivery not found")
+    return DeliveryResponse(
+        id=delivery.id,
+        state=delivery.state,
+        created_at=delivery.created_at,
+        updated_at=delivery.updated_at,
+    )
+
+
 @router.get("/counts")
 async def counts(db: Session = Depends(get_db)):
     """
