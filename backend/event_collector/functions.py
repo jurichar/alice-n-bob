@@ -11,6 +11,24 @@ from datetime import datetime, timezone
 ------------ DELIVERY PART ------------
 """
 
+MAX_DELIVERIES = 1000
+
+
+def enforce_delivery_limit(db: Session):
+    delivery_count = db.query(Delivery).count()
+
+    if delivery_count >= MAX_DELIVERIES:
+        oldest_deliveries = (
+            db.query(Delivery)
+            .order_by(Delivery.created_at)
+            .limit(delivery_count - MAX_DELIVERIES + 1)
+            .all()
+        )
+        for delivery in oldest_deliveries:
+            db.query(Event).filter(Event.delivery_id == delivery.id).delete()
+            db.delete(delivery)
+        db.commit()
+
 
 def create_delivery(db: Session, delivery_id: str):
     new_delivery = Delivery(
@@ -69,22 +87,17 @@ def get_delivery_counts(db: Session):
 """
 
 
-def get_events(db: Session):
-    pass
-
-
 def create_event(db: Session, delivery_id: str, event_type: DeliveryState):
-    pass
+    new_event = Event(
+        event_type=event_type,
+        delivery_id=delivery_id,
+        created_at=datetime.now(timezone.utc),
+    )
+    db.add(new_event)
+    db.commit()
+    db.refresh(new_event)
+    return new_event
 
 
 def get_events_by_delivery_id(db: Session, delivery_id: str):
-    pass
-
-
-"""
------------- OTHER ------------
-"""
-
-
-def get_counts(db: Session):
-    pass
+    return db.query(Event).filter(Event.delivery_id == delivery_id).all()
