@@ -1,5 +1,5 @@
 VENV=venv
-PYTHON=python
+PYTHON=python3
 BASE_URL=http://localhost:8000
 
 $(VENV):

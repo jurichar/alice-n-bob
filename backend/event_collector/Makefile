@@ -1,5 +1,5 @@
 VENV=venv
-PYTHON=python
+PYTHON=python3
 
 $(VENV):
 	$(PYTHON) -m venv $(VENV)
