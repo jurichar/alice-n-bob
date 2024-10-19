@@ -38,6 +38,8 @@ def create_delivery(db: Session, delivery_id: str):
         created_at=datetime.now(timezone.utc),
         updated_at=datetime.now(timezone.utc),
     )
+    enforce_delivery_limit(db)
+
     db.add(new_delivery)
     db.commit()
     db.refresh(new_delivery)

@@ -8,10 +8,12 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from datetime import datetime, timezone, timedelta
 
 from functions import (
     create_delivery,
     get_delivery_by_id,
+    reset_db,
     update_delivery_state,
     get_ongoing_deliveries,
     get_delivery_counts,
@@ -21,7 +23,7 @@ from functions import (
 from utils import generate_name
 from config import Base, init_db
 from main import app
-from models import DeliveryState
+from models import DeliveryState, Delivery
 
 
 """
@@ -144,6 +146,7 @@ def test_get_deliveries_id_events():
 
 def test_get_counts():
     init_db()
+    reset_db(SessionLocal())
     response = client.get("/counts")
     assert response.status_code == 200
     assert "ongoing_deliveries" in response.json()
@@ -156,3 +159,57 @@ def test_get_counts():
     response = client.get("/counts")
     assert response.json()["ongoing_deliveries"] == 3
     assert response.json()["total_deliveries"] == 3
+
+
+def test_data_persistence(db):
+    delivery_id = generate_name()
+    create_delivery(db, delivery_id)
+
+    init_db()
+
+    persisted_delivery = get_delivery_by_id(db, delivery_id)
+    assert persisted_delivery is not None
+    assert persisted_delivery.id == delivery_id
+
+
+def test_counts_api(db):
+    init_db()
+    delivery_id_1 = generate_name()
+    delivery_id_2 = generate_name()
+    create_delivery(db, delivery_id_1)
+    create_delivery(db, delivery_id_2)
+
+    update_delivery_state(
+        db, get_delivery_by_id(db, delivery_id_1), DeliveryState.PARCEL_DELIVERED
+    )
+
+    response = client.get("/counts")
+    data = response.json()
+
+    assert response.status_code == 200
+    assert data["ongoing_deliveries"] == 1
+    assert data["total_deliveries"] == 2
+
+
+def test_event_ordering(db):
+    delivery_id = generate_name()
+    create_delivery(db, delivery_id)
+    create_event(db, delivery_id, DeliveryState.TAKEN_OFF)
+    create_event(db, delivery_id, DeliveryState.LANDED)
+
+    events = get_events_by_delivery_id(db, delivery_id)
+    assert events[0].type == DeliveryState.TAKEN_OFF
+    assert events[1].type == DeliveryState.LANDED
+
+
+def test_enforce_delivery_limit(db):
+    for _ in range(1001):
+        delivery_id = generate_name()
+        create_delivery(db, delivery_id)
+
+    delivery_count = db.query(Delivery).count()
+    assert delivery_count == 1000
+
+    first_delivery = db.query(Delivery).order_by(Delivery.created_at).first()
+    assert first_delivery.created_at > datetime.now(timezone.utc) - timedelta(days=1)
+    assert first_delivery.state == DeliveryState.PARCEL_COLLECTED
