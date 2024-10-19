@@ -9,7 +9,7 @@ const EventForm = ({ deliveryId, onEventAdded }) => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`http://localhost:8000/deliveries/${deliveryId}/events`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/deliveries/${deliveryId}/events`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

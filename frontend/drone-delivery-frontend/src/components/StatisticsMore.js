@@ -8,7 +8,7 @@ const StatisticsMore = () => {
   useEffect(() => {
     const fetchStatistics = async () => {
       try {
-        const response = await fetch("http://localhost:8000/counts_all");
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/counts_all`);
         if (!response.ok) {
           throw new Error("Failed to fetch statistics");
         }

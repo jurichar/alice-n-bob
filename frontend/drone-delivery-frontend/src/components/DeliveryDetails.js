@@ -7,7 +7,7 @@ const DeliveryDetails = ({ delivery, refreshEvents }) => {
 
   const fetchDeliveryEvents = useCallback(async () => {
     try {
-      const response = await fetch(`http://localhost:8000/deliveries/${delivery.id}/events`);
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/deliveries/${delivery.id}/events`);
       if (!response.ok) {
         throw new Error("Failed to fetch delivery events");
       }

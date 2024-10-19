@@ -10,7 +10,7 @@ const TrackDelivery = () => {
   const handleTrackDelivery = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch(`http://localhost:8000/deliveries/${deliveryId}/`);
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/deliveries/${deliveryId}/`);
       if (!response.ok) {
         throw new Error("Delivery not found");
       }
