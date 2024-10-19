@@ -3,6 +3,7 @@ schemas.py is the file that contains the schemas for Pydantic models.
 """
 
 from pydantic import BaseModel
+from datetime import datetime
 from enum import Enum
 
 
@@ -14,20 +15,19 @@ class DeliveryState(str, Enum):
     PARCEL_DELIVERED = "PARCEL_DELIVERED"
 
 
-class Event(BaseModel):
-    type: str
+class EventCreate(BaseModel):
+    type: DeliveryState
 
 
 class DeliveryResponse(BaseModel):
     id: str
     state: DeliveryState
-    created_at: str
-    updated_at: str
+    created_at: datetime
+    updated_at: datetime
 
 
 class EventResponse(BaseModel):
     id: str
     delivery_id: str
-    type: str
-    created_at: str
-    updated_at: str
+    created_at: datetime
+    updated_at: datetime
