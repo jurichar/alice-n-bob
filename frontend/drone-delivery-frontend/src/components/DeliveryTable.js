@@ -1,6 +1,6 @@
 // Dashboard.js
 
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import DeliveryRow from './DeliveryRow';
 
@@ -30,8 +30,8 @@ const DeliveryTable = () => {
   return (
     <div>
       <Typography variant="h5" padding={1}>
-            Ongoing Deliveries
-          </Typography>
+        Ongoing Deliveries
+      </Typography>
       {loading ? (
         <p>Loading...</p>
       ) : (
@@ -47,7 +47,7 @@ const DeliveryTable = () => {
             <TableBody >
               {deliveries.length > 0 ? (
                 deliveries.map((delivery) => (
-                  <DeliveryRow key={delivery.id} delivery={delivery}/>
+                  <DeliveryRow key={delivery.id} delivery={delivery} />
                 ))
               ) : (
                 <TableRow>
@@ -58,6 +58,14 @@ const DeliveryTable = () => {
               )}
             </TableBody>
           </Table>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={fetchDeliveries}
+            style={{ margin: "1rem" }}
+          >
+            Refresh
+          </Button>
         </TableContainer>
       )}
     </div>
