@@ -12,3 +12,6 @@ clear:
 
 run: install
 	$(VENV)/bin/uvicorn main:app --reload
+
+test: install
+	$(VENV)/bin/pytest tests.py
