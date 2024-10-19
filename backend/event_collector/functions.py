@@ -69,16 +69,13 @@ def get_ongoing_deliveries(db: Session):
 
 def get_delivery_counts(db: Session):
     return {
-        "total": db.query(Delivery).count(),
-        "ongoing": db.query(Delivery)
-        .filter(Delivery.state != DeliveryState.PARCEL_DELIVERED)
+        "ongoing_deliveries": db.query(Delivery)
+        .filter(
+            Delivery.state != DeliveryState.PARCEL_DELIVERED
+            or Delivery.state != DeliveryState.CRASHED
+        )
         .count(),
-        "delivered": db.query(Delivery)
-        .filter(Delivery.state == DeliveryState.PARCEL_DELIVERED)
-        .count(),
-        "crashed": db.query(Delivery)
-        .filter(Delivery.state == DeliveryState.CRASHED)
-        .count(),
+        "total_deliveries": db.query(Delivery).count(),
     }
 
 
@@ -101,3 +98,10 @@ def create_event(db: Session, delivery_id: str, type: DeliveryState):
 
 def get_events_by_delivery_id(db: Session, delivery_id: str):
     return db.query(Event).filter(Event.delivery_id == delivery_id).all()
+
+
+def reset_db(db: Session):
+    db.query(Event).delete()
+    db.query(Delivery).delete()
+    db.commit()
+    return True

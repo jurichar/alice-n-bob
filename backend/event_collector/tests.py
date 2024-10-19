@@ -21,7 +21,7 @@ from functions import (
 from utils import generate_name
 from config import Base, init_db
 from main import app
-from models import Delivery, Event, DeliveryState
+from models import DeliveryState
 
 
 """
@@ -85,18 +85,14 @@ def test_get_ongoing_deliveries(db):
 
 def test_get_delivery_counts(db):
     count = get_delivery_counts(db)
-    assert count["total"] == 0
-    assert count["ongoing"] == 0
-    assert count["delivered"] == 0
-    assert count["crashed"] == 0
+    assert count["ongoing_deliveries"] == 0
+    assert count["total_deliveries"] == 0
     create_delivery(db, generate_name())
     create_delivery(db, generate_name())
     create_delivery(db, generate_name())
     count = get_delivery_counts(db)
-    assert count["total"] == 3
-    assert count["ongoing"] == 3
-    assert count["delivered"] == 0
-    assert count["crashed"] == 0
+    assert count["ongoing_deliveries"] == 3
+    assert count["total_deliveries"] == 3
 
 
 def test_create_event(db):
@@ -117,3 +113,38 @@ def test_get_events_by_delivery_id(db):
     create_event(db, delivery_id, DeliveryState.PARCEL_DELIVERED)
     events = get_events_by_delivery_id(db, delivery_id)
     assert len(events) == 5
+
+
+def test_post_deliveries_id_event():
+    delivery_id = generate_name()
+    response = client.post(
+        f"/deliveries/{delivery_id}/events", json={"type": "TAKEN_OFF"}
+    )
+    print(response.json())
+    assert response.status_code == 200
+    assert response.json()["type"] == "TAKEN_OFF"
+
+
+def test_get_deliveries():
+    init_db()
+    response = client.get("/deliveries")
+    assert response.status_code == 200
+    assert isinstance(response.json(), list)
+
+
+# def test_get_deliveries_id_events():
+#     init_db()
+#     delivery_id = generate_name()
+#     client.post(f"/deliveries/{delivery_id}/events", json={"type": "TAKEN_OFF"})
+#     response = client.get(f"/deliveries/{delivery_id}/events")
+#     assert response.status_code == 200
+#     assert isinstance(response.json(), list)
+
+
+# def test_get_counts():
+#     init_db()
+#     response = client.get("/counts")
+#     assert response.status_code == 200
+#     assert "ongoing_deliveries" in response.json()
+#     assert "total_deliveries" in response.json()
+#     assert response.json()["ongoing_deliveries"] == 2

@@ -10,9 +10,9 @@ from functions import (
     get_delivery_by_id,
     update_delivery_state,
     get_ongoing_deliveries,
-    get_delivery_counts,
     create_event,
     get_events_by_delivery_id,
+    reset_db,
 )
 from config import get_db
 from schemas import EventResponse, EventCreate, DeliveryResponse, DeliveryState
@@ -20,18 +20,31 @@ from schemas import EventResponse, EventCreate, DeliveryResponse, DeliveryState
 router = APIRouter()
 
 
-@router.post("/deliveries/{id}/events", response_model=EventResponse)
-async def root(delivery_id: str, event: EventCreate, db: Session = Depends(get_db)):
+@router.post("/deliveries/{delivery_id}/events", response_model=EventResponse)
+async def add_event(
+    delivery_id: str, event: EventCreate, db: Session = Depends(get_db)
+):
     """
     Ingests events. It accepts a JSON payload in the request body in the form `{"type": "TAKEN_OFF"}`.
     """
+    delivery = get_delivery_by_id(db, delivery_id)
+
+    if delivery and delivery.state in [
+        DeliveryState.PARCEL_DELIVERED,
+        DeliveryState.CRASHED,
+    ]:
+        raise HTTPException(
+            status_code=400, detail="Cannot update a completed delivery"
+        )
+
     if not delivery:
         delivery = create_delivery(db, delivery_id)
+
+    new_event = create_event(db, delivery_id, event.type)
 
     if event.type in [DeliveryState.CRASHED, DeliveryState.PARCEL_DELIVERED]:
         update_delivery_state(db, delivery, event.type)
 
-    new_event = create_event(db, delivery_id, event.type)
     return EventResponse(**new_event.__dict__)
 
 
@@ -63,3 +76,8 @@ async def counts(db: Session = Depends(get_db)):
     Returns the number of ongoing deliveries and the total number of deliveries since the beginning.
     """
     return get_ongoing_deliveries(db)
+
+
+@router.get("/reset")
+async def reset(db: Session = Depends(get_db)):
+    return reset_db(db)

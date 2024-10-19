@@ -29,5 +29,6 @@ class DeliveryResponse(BaseModel):
 class EventResponse(BaseModel):
     id: str
     delivery_id: str
+    type: DeliveryState
     created_at: datetime
     updated_at: datetime
