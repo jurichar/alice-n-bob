@@ -46,7 +46,13 @@ async def add_event(
     if event.type in [DeliveryState.CRASHED, DeliveryState.PARCEL_DELIVERED]:
         update_delivery_state(db, delivery, event.type)
 
-    return EventResponse(**new_event.__dict__)
+    return EventResponse(
+        id=new_event.id,
+        delivery_id=new_event.delivery_id,
+        type=new_event.type,
+        created_at=new_event.created_at,
+        updated_at=new_event.updated_at,
+    )
 
 
 @router.get("/deliveries", response_model=list[DeliveryResponse])
@@ -55,7 +61,15 @@ async def deliveries(db: Session = Depends(get_db)):
     Lists all currently ongoing deliveries (i.e., deliveries not in a final state).
     """
     deliveries = get_ongoing_deliveries(db)
-    return [DeliveryResponse(**delivery.__dict__) for delivery in deliveries]
+    return [
+        DeliveryResponse(
+            id=delivery.id,
+            state=delivery.state,
+            created_at=delivery.created_at,
+            updated_at=delivery.updated_at,
+        )
+        for delivery in deliveries
+    ]
 
 
 @router.get("/deliveries/{delivery_id}/events", response_model=list[EventResponse])
@@ -68,7 +82,16 @@ def events(delivery_id: str, db: Session = Depends(get_db)):
     if not delivery:
         raise HTTPException(status_code=404, detail="Delivery not found")
     events = get_events_by_delivery_id(db, delivery_id)
-    return [EventResponse(**event.__dict__) for event in events]
+    return [
+        EventResponse(
+            id=event.id,
+            delivery_id=event.delivery_id,
+            type=event.type,
+            created_at=event.created_at,
+            updated_at=event.updated_at,
+        )
+        for event in events
+    ]
 
 
 @router.get("/counts")

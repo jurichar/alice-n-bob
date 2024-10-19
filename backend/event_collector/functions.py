@@ -4,6 +4,7 @@ Only use SQLAlchemy ORM methods in this file.
 """
 
 from sqlalchemy.orm import Session
+from utils import generate_name
 from models import Delivery, Event, DeliveryState
 from datetime import datetime, timezone
 
@@ -86,6 +87,7 @@ def get_delivery_counts(db: Session):
 
 def create_event(db: Session, delivery_id: str, type: DeliveryState):
     new_event = Event(
+        id=generate_name(),
         type=type,
         delivery_id=delivery_id,
         created_at=datetime.now(timezone.utc),
