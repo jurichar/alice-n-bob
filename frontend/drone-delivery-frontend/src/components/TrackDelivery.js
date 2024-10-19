@@ -19,6 +19,7 @@ const TrackDelivery = () => {
       console.log("Delivery details fetched from tracker", data);
       setDelivery({
         id: deliveryId,
+        ...data,
       });
       setError(null);
     } catch (error) {
