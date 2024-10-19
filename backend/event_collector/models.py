@@ -2,14 +2,14 @@
 models.py is the file that contains the models for SQLAlchemy ORM.
 """
 
-from sqlalchemy import Column, String
+from sqlalchemy import Column, String, Enum, ForeignKey
 from sqlalchemy.orm import declarative_base
-from enum import Enum
+from enum import Enum as enum
 
 Base = declarative_base()
 
 
-class DeliveryState(str, Enum):
+class DeliveryState(str, enum):
     PARCEL_COLLECTED = "PARCEL_COLLECTED"
     TAKEN_OFF = "TAKEN_OFF"
     LANDED = "LANDED"
@@ -29,8 +29,8 @@ class Delivery(Base):
 class Event(Base):
     __tablename__ = "events"
 
-    id = Column(String, primary_key=True, autoincrement=True)
-    delivery_id = Column(String)
-    type = Column(String)
+    id = Column(String, primary_key=True, default="1")
+    delivery_id = Column(String, ForeignKey("deliveries.id"))
+    type = Column(Enum(DeliveryState))
     created_at = Column(String)
     updated_at = Column(String)
