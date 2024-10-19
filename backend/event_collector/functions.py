@@ -4,19 +4,26 @@ Only use SQLAlchemy ORM methods in this file.
 """
 
 from sqlalchemy.orm import Session
-
+from models import Delivery, Event, DeliveryState
+from datetime import datetime, timezone
 
 """
 ------------ DELIVERY PART ------------
 """
 
 
-def create_delivery():
-    pass
+def create_delivery(db: Session, delivery_id: str):
+    new_delivery = Delivery(
+        id=delivery_id,
+        state=DeliveryState.PARCEL_COLLECTED,
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc),
+    )
+    db.add(new_delivery)
+    db.commit()
+    db.refresh(new_delivery)
 
-
-def get_deliveries():
-    pass
+    return new_delivery
 
 
 def get_delivery_by_id():
