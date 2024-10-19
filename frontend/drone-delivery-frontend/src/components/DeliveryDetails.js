@@ -13,7 +13,6 @@ const DeliveryDetails = ({ delivery, refreshEvents }) => {
       }
 
       const data = await response.json();
-      console.log("Delivery events fetched successfully", data);
       setEvents(data);
     } catch (error) {
       console.error("Error fetching delivery events", error);

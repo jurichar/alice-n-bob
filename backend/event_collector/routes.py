@@ -14,6 +14,7 @@ from functions import (
     get_events_by_delivery_id,
     get_delivery_counts,
     reset_db,
+    get_all_counts,
 )
 from config import get_db
 from schemas import EventResponse, EventCreate, DeliveryResponse, DeliveryState
@@ -123,7 +124,7 @@ async def counts_all(db: Session = Depends(get_db)):
     """
     Returns the number of ongoing deliveries and the total number of deliveries since the beginning.
     """
-    return get_delivery_counts(db)
+    return get_all_counts(db)
 
 
 @router.get("/reset")

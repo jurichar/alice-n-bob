@@ -21,8 +21,7 @@ const EventForm = ({ deliveryId, onEventAdded }) => {
         throw new Error("Failed to add event");
       }
 
-      const data = await response.json();
-      console.log("Event added successfully", data);
+      await response.json();
       onEventAdded();
     } catch (error) {
       setError("Failed to add event");

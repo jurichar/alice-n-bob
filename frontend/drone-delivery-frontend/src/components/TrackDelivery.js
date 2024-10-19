@@ -16,7 +16,6 @@ const TrackDelivery = () => {
       }
 
       const data = await response.json();
-      console.log("Delivery details fetched from tracker", data);
       setDelivery({
         id: deliveryId,
         ...data,
