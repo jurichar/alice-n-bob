@@ -39,11 +39,29 @@ def update_delivery_state(db: Session, delivery: Delivery, new_state: DeliverySt
 
 
 def get_ongoing_deliveries(db: Session):
-    pass
+    return (
+        db.query(Delivery)
+        .filter(
+            Delivery.state != DeliveryState.PARCEL_DELIVERED
+            or Delivery.state != DeliveryState.CRASHED
+        )
+        .all()
+    )
 
 
 def get_delivery_counts(db: Session):
-    pass
+    return {
+        "total": db.query(Delivery).count(),
+        "ongoing": db.query(Delivery)
+        .filter(Delivery.state != DeliveryState.PARCEL_DELIVERED)
+        .count(),
+        "delivered": db.query(Delivery)
+        .filter(Delivery.state == DeliveryState.PARCEL_DELIVERED)
+        .count(),
+        "crashed": db.query(Delivery)
+        .filter(Delivery.state == DeliveryState.CRASHED)
+        .count(),
+    }
 
 
 """

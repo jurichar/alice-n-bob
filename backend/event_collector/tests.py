@@ -9,7 +9,13 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from functions import create_delivery, update_delivery_state
+from functions import (
+    create_delivery,
+    get_ongoing_deliveries,
+    update_delivery_state,
+    get_delivery_counts,
+    get_delivery_by_id,
+)
 from utils import generate_name
 from config import Base, init_db
 from main import app
@@ -43,16 +49,17 @@ client = TestClient(app)
 """
 
 
-def test_counts(db):
-    response = client.get("/counts")
-    assert response.status_code == 200
-    assert response.json() == {"message": "ok"}
-
-
 def test_create_delivery(db):
     delivery_id = generate_name()
     delivery = create_delivery(db, delivery_id)
     assert delivery.id == delivery_id
+
+
+def test_get_delivery_by_id(db):
+    delivery_id = generate_name()
+    create_delivery(db, delivery_id)
+    retrieved_delivery = get_delivery_by_id(db, delivery_id)
+    assert retrieved_delivery.id == delivery_id
 
 
 def test_update_delivery_state(db):
@@ -60,3 +67,31 @@ def test_update_delivery_state(db):
     delivery = create_delivery(db, delivery_id)
     updated_delivery = update_delivery_state(db, delivery, DeliveryState.CRASHED)
     assert updated_delivery.state == DeliveryState.CRASHED
+
+
+def test_get_ongoing_deliveries(db):
+    ongoing_deliveries = [
+        create_delivery(db, generate_name()),
+        create_delivery(db, generate_name()),
+    ]
+    ongoing_deliveries[0].state = DeliveryState.PARCEL_DELIVERED
+    db.commit()
+    ongoing_deliveries = get_ongoing_deliveries(db)
+    assert len(ongoing_deliveries) == 1
+    assert ongoing_deliveries[0].state == DeliveryState.PARCEL_COLLECTED
+
+
+def test_get_delivery_counts(db):
+    count = get_delivery_counts(db)
+    assert count["total"] == 0
+    assert count["ongoing"] == 0
+    assert count["delivered"] == 0
+    assert count["crashed"] == 0
+    create_delivery(db, generate_name())
+    create_delivery(db, generate_name())
+    create_delivery(db, generate_name())
+    count = get_delivery_counts(db)
+    assert count["total"] == 3
+    assert count["ongoing"] == 3
+    assert count["delivered"] == 0
+    assert count["crashed"] == 0
