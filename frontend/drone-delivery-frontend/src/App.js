@@ -1,4 +1,5 @@
-import { Container, AppBar, Toolbar, Typography, Box } from '@mui/material';
+import { AppBar, Box, Container, Toolbar, Typography } from '@mui/material';
+import Dashboard from './components/Dashboard';
 
 function App() {
   return (
@@ -15,9 +16,7 @@ function App() {
         <Typography variant="h4" gutterBottom style={{ marginTop: '20px'}}>
           Welcome to the Drone Delivery System
         </Typography>
-        <Typography variant="body1">
-          This is the homepage for managing drone deliveries. Use the navigation to view ongoing deliveries or statistics.
-        </Typography>
+        <Dashboard />
       </Container>
     </div>
   );
