@@ -7,7 +7,7 @@ import DeliveryRow from './DeliveryRow';
 const DeliveryTable = () => {
   const [deliveries, setDeliveries] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   const fetchDeliveries = useCallback(async () => {
     try {
       const response = await fetch("http://localhost:8000/deliveries");
@@ -29,36 +29,36 @@ const DeliveryTable = () => {
 
   return (
     <div>
-      <Typography variant="h4" gutterBottom>
-        Ongoing Deliveries
-      </Typography>
+      <Typography variant="h5" padding={1}>
+            Ongoing Deliveries
+          </Typography>
       {loading ? (
         <p>Loading...</p>
       ) : (
         <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell><strong>Status</strong></TableCell>
-              <TableCell><strong>Delivery ID</strong></TableCell>
-              <TableCell><strong>Actions</strong></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {deliveries.length > 0 ? (
-              deliveries.map((delivery) => (
-                <DeliveryRow key={delivery.id} delivery={delivery} />
-              ))
-            ) : (
+          <Table>
+
+            <TableHead>
               <TableRow>
-                <TableCell colSpan={5} align="center">
-                  No deliveries
-                </TableCell>
+                <TableCell align='center'><strong>Status</strong></TableCell>
+                <TableCell align='center'><strong>Delivery ID</strong></TableCell>
               </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody >
+              {deliveries.length > 0 ? (
+                deliveries.map((delivery) => (
+                  <DeliveryRow key={delivery.id} delivery={delivery} />
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={5} align="center">
+                    No deliveries
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
       )}
     </div>
   );
