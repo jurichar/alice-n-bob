@@ -19,6 +19,22 @@ def get_deliveries():
     pass
 
 
+def get_delivery_by_id():
+    pass
+
+
+def update_delivery_state():
+    pass
+
+
+def get_ongoing_deliveries():
+    pass
+
+
+def get_delivery_counts():
+    pass
+
+
 """
 ------------ EVENTS PART ------------
 """
@@ -29,6 +45,10 @@ def get_events():
 
 
 def create_event():
+    pass
+
+
+def get_events_by_delivery_id():
     pass
 
 
