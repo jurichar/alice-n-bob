@@ -9,10 +9,11 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from functions import create_delivery
+from functions import create_delivery, update_delivery_state
 from utils import generate_name
 from config import Base, init_db
 from main import app
+from models import Delivery, Event, DeliveryState
 
 
 """
@@ -54,5 +55,8 @@ def test_create_delivery(db):
     assert delivery.id == delivery_id
 
 
-def test_get_deliveries():
-    pass
+def test_update_delivery_state(db):
+    delivery_id = generate_name()
+    delivery = create_delivery(db, delivery_id)
+    updated_delivery = update_delivery_state(db, delivery, DeliveryState.CRASHED)
+    assert updated_delivery.state == DeliveryState.CRASHED

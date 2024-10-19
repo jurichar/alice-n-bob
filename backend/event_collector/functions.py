@@ -26,19 +26,23 @@ def create_delivery(db: Session, delivery_id: str):
     return new_delivery
 
 
-def get_delivery_by_id():
+def get_delivery_by_id(db: Session, delivery_id: str):
+    return db.query(Delivery).filter(Delivery.id == delivery_id).first()
+
+
+def update_delivery_state(db: Session, delivery: Delivery, new_state: DeliveryState):
+    delivery.state = new_state
+    delivery.updated_at = datetime.now(timezone.utc)
+    db.commit()
+    db.refresh(delivery)
+    return delivery
+
+
+def get_ongoing_deliveries(db: Session):
     pass
 
 
-def update_delivery_state():
-    pass
-
-
-def get_ongoing_deliveries():
-    pass
-
-
-def get_delivery_counts():
+def get_delivery_counts(db: Session):
     pass
 
 
@@ -47,15 +51,15 @@ def get_delivery_counts():
 """
 
 
-def get_events():
+def get_events(db: Session):
     pass
 
 
-def create_event():
+def create_event(db: Session, delivery_id: str, event_type: DeliveryState):
     pass
 
 
-def get_events_by_delivery_id():
+def get_events_by_delivery_id(db: Session, delivery_id: str):
     pass
 
 
@@ -64,5 +68,5 @@ def get_events_by_delivery_id():
 """
 
 
-def get_counts():
+def get_counts(db: Session):
     pass
