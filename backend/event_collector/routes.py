@@ -12,6 +12,7 @@ from functions import (
     get_ongoing_deliveries,
     create_event,
     get_events_by_delivery_id,
+    get_delivery_counts,
     reset_db,
 )
 from config import get_db
@@ -66,7 +67,7 @@ def events(delivery_id: str, db: Session = Depends(get_db)):
     delivery = get_delivery_by_id(db=db, delivery_id=delivery_id)
     if not delivery:
         raise HTTPException(status_code=404, detail="Delivery not found")
-    events = get_events_by_delivery_id(function, delivery_id)
+    events = get_events_by_delivery_id(db, delivery_id)
     return [EventResponse(**event.__dict__) for event in events]
 
 
@@ -75,7 +76,7 @@ async def counts(db: Session = Depends(get_db)):
     """
     Returns the number of ongoing deliveries and the total number of deliveries since the beginning.
     """
-    return get_ongoing_deliveries(db)
+    return get_delivery_counts(db)
 
 
 @router.get("/reset")

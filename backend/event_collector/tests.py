@@ -116,6 +116,7 @@ def test_get_events_by_delivery_id(db):
 
 
 def test_post_deliveries_id_event():
+    init_db()
     delivery_id = generate_name()
     response = client.post(
         f"/deliveries/{delivery_id}/events", json={"type": "TAKEN_OFF"}
@@ -132,19 +133,26 @@ def test_get_deliveries():
     assert isinstance(response.json(), list)
 
 
-# def test_get_deliveries_id_events():
-#     init_db()
-#     delivery_id = generate_name()
-#     client.post(f"/deliveries/{delivery_id}/events", json={"type": "TAKEN_OFF"})
-#     response = client.get(f"/deliveries/{delivery_id}/events")
-#     assert response.status_code == 200
-#     assert isinstance(response.json(), list)
+def test_get_deliveries_id_events():
+    init_db()
+    delivery_id = generate_name()
+    client.post(f"/deliveries/{delivery_id}/events", json={"type": "TAKEN_OFF"})
+    response = client.get(f"/deliveries/{delivery_id}/events")
+    assert response.status_code == 200
+    assert isinstance(response.json(), list)
 
 
-# def test_get_counts():
-#     init_db()
-#     response = client.get("/counts")
-#     assert response.status_code == 200
-#     assert "ongoing_deliveries" in response.json()
-#     assert "total_deliveries" in response.json()
-#     assert response.json()["ongoing_deliveries"] == 2
+def test_get_counts():
+    init_db()
+    response = client.get("/counts")
+    assert response.status_code == 200
+    assert "ongoing_deliveries" in response.json()
+    assert "total_deliveries" in response.json()
+    assert response.json()["ongoing_deliveries"] == 0
+    assert response.json()["total_deliveries"] == 0
+    client.post(f"/deliveries/{generate_name()}/events", json={"type": "TAKEN_OFF"})
+    client.post(f"/deliveries/{generate_name()}/events", json={"type": "TAKEN_OFF"})
+    client.post(f"/deliveries/{generate_name()}/events", json={"type": "TAKEN_OFF"})
+    response = client.get("/counts")
+    assert response.json()["ongoing_deliveries"] == 3
+    assert response.json()["total_deliveries"] == 3
