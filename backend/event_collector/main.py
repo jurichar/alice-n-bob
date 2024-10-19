@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
 from routes import router
+from config import init_db
 
 app = FastAPI()
 app.include_router(router)
@@ -18,6 +19,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+async def startup_event():
+    init_db()
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="localhost", port=8000)
