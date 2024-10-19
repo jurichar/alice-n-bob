@@ -1,5 +1,6 @@
 import { AppBar, Box, Container, Toolbar, Typography } from '@mui/material';
 import DeliveryTable from './components/DeliveryTable';
+import Statistics from './components/Statistics';
 import TrackDelivery from './components/TrackDelivery';
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
         </Typography>
         <TrackDelivery />
         <DeliveryTable />
+        <Statistics />
       </Container>
     </div>
   );
