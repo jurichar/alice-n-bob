@@ -47,7 +47,7 @@ const DeliveryTable = () => {
             <TableBody >
               {deliveries.length > 0 ? (
                 deliveries.map((delivery) => (
-                  <DeliveryRow key={delivery.id} delivery={delivery} />
+                  <DeliveryRow key={delivery.id} delivery={delivery}/>
                 ))
               ) : (
                 <TableRow>

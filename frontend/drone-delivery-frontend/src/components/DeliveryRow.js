@@ -9,21 +9,30 @@ import {
   useMediaQuery,
   useTheme
 } from "@mui/material";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import DeliveryDetails from "./DeliveryDetails";
+import EventForm from "./EventForm";
 
-const DeliveryRow = ({ delivery }) => {
+const DeliveryRow = ({ delivery, eventAdded }) => {
   const [open, setOpen] = useState(false);
+  const deliveryDetailsRef = useRef(null);
+
 
   const handleToggleDetails = () => {
     setOpen(!open);
+  };
+
+  const handleEventAdded = () => {
+    setOpen(true);
+    if (deliveryDetailsRef.current) {
+      deliveryDetailsRef.current();
+    }
   };
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const displayedId = isMobile ? delivery.id.substring(0, 6) + "..." : delivery.id;
 
-  
   return (
     <>
       <TableRow>
@@ -33,11 +42,12 @@ const DeliveryRow = ({ delivery }) => {
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel1a-content"
             >
-              <Typography sx={{textAlign: 'center', flex: 1, fontSize: isMobile ? "0.75rem" : "1rem" }}>{delivery.state}</Typography>
-              <Typography sx={{textAlign: 'center', flex: 1, fontSize: isMobile ? "0.75rem" : "1rem" }}>{displayedId}</Typography>
+              <Typography sx={{textAlign: 'center', flex: 1, fontSize: isMobile ? "0.9rem" : "1rem" }}>{delivery.state}</Typography>
+              <Typography sx={{textAlign: 'center', flex: 1, fontSize: isMobile ? "0.9rem" : "1rem" }}>{displayedId}</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <DeliveryDetails delivery={delivery} />
+              <EventForm deliveryId={delivery.id} onEventAdded={handleEventAdded} />
+              <DeliveryDetails delivery={delivery} refreshEvents={deliveryDetailsRef}/>
             </AccordionDetails>
           </Accordion>
         </TableCell>

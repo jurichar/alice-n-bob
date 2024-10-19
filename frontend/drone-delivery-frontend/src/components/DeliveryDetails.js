@@ -1,7 +1,7 @@
 import { Divider, List, ListItem, Typography } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 
-const DeliveryDetails = ({ delivery }) => {
+const DeliveryDetails = ({ delivery, refreshEvents }) => {
   const [events, setEvents] = useState([]);
 
   const fetchDeliveryEvents = useCallback(async () => {
@@ -21,7 +21,10 @@ const DeliveryDetails = ({ delivery }) => {
 
   useEffect(() => {
     fetchDeliveryEvents();
-  }, [fetchDeliveryEvents]);
+    if (refreshEvents) {
+      refreshEvents.current = fetchDeliveryEvents;
+    }
+  }, [fetchDeliveryEvents, refreshEvents]);
 
   return (
     <div>
