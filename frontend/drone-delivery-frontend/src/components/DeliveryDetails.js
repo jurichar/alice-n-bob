@@ -1,5 +1,6 @@
 import { Divider, List, ListItem, Typography } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
+import { getStatusColor } from "../utils";
 
 const DeliveryDetails = ({ delivery, refreshEvents }) => {
   const [events, setEvents] = useState([]);
@@ -40,7 +41,7 @@ const DeliveryDetails = ({ delivery, refreshEvents }) => {
       <Typography>
         <strong>Updated At:</strong> {new Date(delivery.updated_at).toLocaleString()}
       </Typography>
-      <Typography>
+      <Typography sx={{ color: getStatusColor(delivery.state) }}>
         <strong>Status:</strong> {delivery.state}
       </Typography>
 
