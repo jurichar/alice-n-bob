@@ -11,10 +11,12 @@ from sqlalchemy.orm import sessionmaker
 
 from functions import (
     create_delivery,
-    get_ongoing_deliveries,
-    update_delivery_state,
-    get_delivery_counts,
     get_delivery_by_id,
+    update_delivery_state,
+    get_ongoing_deliveries,
+    get_delivery_counts,
+    create_event,
+    get_events_by_delivery_id,
 )
 from utils import generate_name
 from config import Base, init_db
@@ -95,3 +97,23 @@ def test_get_delivery_counts(db):
     assert count["ongoing"] == 3
     assert count["delivered"] == 0
     assert count["crashed"] == 0
+
+
+def test_create_event(db):
+    delivery_id = generate_name()
+    create_delivery(db, delivery_id)
+    event = create_event(db, delivery_id, DeliveryState.PARCEL_COLLECTED)
+    assert event.delivery_id == delivery_id
+    assert event.type == DeliveryState.PARCEL_COLLECTED
+
+
+def test_get_events_by_delivery_id(db):
+    delivery_id = generate_name()
+    create_delivery(db, delivery_id)
+    create_event(db, delivery_id, DeliveryState.PARCEL_COLLECTED)
+    create_event(db, delivery_id, DeliveryState.TAKEN_OFF)
+    create_event(db, delivery_id, DeliveryState.LANDED)
+    create_event(db, delivery_id, DeliveryState.CRASHED)
+    create_event(db, delivery_id, DeliveryState.PARCEL_DELIVERED)
+    events = get_events_by_delivery_id(db, delivery_id)
+    assert len(events) == 5

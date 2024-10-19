@@ -1,5 +1,5 @@
 """
-route.py is the file that contains the routes from SQLAlchemy ORM methods in the CRUD operations.
+route.py is the file that contains the routes from SQLAlchemy ORM methods.
 """
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -27,6 +27,9 @@ async def root(delivery_id: str, event: EventCreate, db: Session = Depends(get_d
     """
     if not delivery:
         delivery = create_delivery(db, delivery_id)
+
+    if event.type in [DeliveryState.CRASHED, DeliveryState.PARCEL_DELIVERED]:
+        update_delivery_state(db, delivery, event.type)
 
     new_event = create_event(db, delivery_id, event.type)
     return EventResponse(**new_event.__dict__)

@@ -1,5 +1,5 @@
 """
-crud.py is the file that contains the CRUD operations (Create Read Update Delete).
+function.py is the file that contains the CRUD operations (Create Read Update Delete).
 Only use SQLAlchemy ORM methods in this file.
 """
 
@@ -87,9 +87,9 @@ def get_delivery_counts(db: Session):
 """
 
 
-def create_event(db: Session, delivery_id: str, event_type: DeliveryState):
+def create_event(db: Session, delivery_id: str, type: DeliveryState):
     new_event = Event(
-        event_type=event_type,
+        type=type,
         delivery_id=delivery_id,
         created_at=datetime.now(timezone.utc),
     )
