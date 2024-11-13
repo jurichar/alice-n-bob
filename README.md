@@ -18,3 +18,31 @@ The backend test involves developing a drone delivery API in Python using FastAP
 # Frontend
 
 The frontend test complements the backend test and requires the candidate to develop a user interface for the drone delivery API using React.
+
+--------------------------------------------------------
+
+# Installation 
+
+## Database
+
+- You need postgres, node and python3.
+
+## Backend 
+
+- Modify .env with you own informations.
+- Run make install or install requirements in your virtual env.
+- Run make run.
+- Run make test to test the code.
+
+## Frontend
+
+- Run npm install.
+- Run npm run dev.
+
+# Improvements :
+
+- Add dockerfiles + docker-compose.
+- More tests.
+- More precise documentation or docutests.
+- Improve front.
+- More security checks for back.
